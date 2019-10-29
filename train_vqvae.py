@@ -13,7 +13,7 @@ from vqvae import VQVAE
 from scheduler import CycleScheduler
 
 from tensorboardX import SummaryWriter
-writer = SummaryWriter('./allTxlog/txlog_nembed512')
+writer = SummaryWriter('./allTxlog/vqvae')
 def train(epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     transform = transforms.Compose(
         [
             transforms.Resize(args.size),
-            transforms.CenterCrop(args.size),
+            # transforms.CenterCrop(args.size),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
         ]
