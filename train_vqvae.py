@@ -1,6 +1,7 @@
 import argparse
 
 import torch
+import os
 from torch import nn, optim
 from torch.utils.data import DataLoader
 
@@ -11,7 +12,8 @@ from tqdm import tqdm
 from vqvae import VQVAE
 from scheduler import CycleScheduler
 
-
+from tensorboardX import SummaryWriter
+writer = SummaryWriter('./allTxlog/txlog_nembed512')
 def train(epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
 
@@ -50,6 +52,10 @@ def train(epoch, loader, model, optimizer, scheduler, device):
                 f'lr: {lr:.5f}'
             )
         )
+        writer.add_scalar('mse',recon_loss.item(),epoch)
+        writer.add_scalar('latent',latent_loss.item(),epoch)
+        writer.add_scalar('ave_mse',mse_sum/mse_n,epoch)
+        writer.add_scalar('sum_loss',loss,epoch)
 
         if i % 100 == 0:
             model.eval()
@@ -60,7 +66,7 @@ def train(epoch, loader, model, optimizer, scheduler, device):
                 out, _ = model(sample)
 
             utils.save_image(
-                torch.cat([sample, out], 1),
+                torch.cat([sample, out], 0),
                 f'sample/{str(epoch + 1).zfill(5)}_{str(i).zfill(5)}.png',
                 nrow=sample_size,
                 normalize=True,
@@ -76,6 +82,7 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=420)
     parser.add_argument('--lr', type=float, default=3e-4)
     parser.add_argument('--sched', type=str)
+    parser.add_argument('batchsize',type=int,default=8)
     parser.add_argument('path', type=str)
 
     args = parser.parse_args()
@@ -94,8 +101,7 @@ if __name__ == '__main__':
     )
 
     dataset = datasets.ImageFolder(args.path, transform=transform)
-    loader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=4)
-
+    loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=True, num_workers=4)
     model = nn.DataParallel(VQVAE()).to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
@@ -110,3 +116,4 @@ if __name__ == '__main__':
         torch.save(
             model.module.state_dict(), f'checkpoint/vqvae_{str(i + 1).zfill(3)}.pt'
         )
+    writer.close()
