@@ -27,6 +27,17 @@ If you use FFHQ, I highly recommends to preprocess images. (resize and convert t
 
 > python train_pixelsnail.py [LMDB NAME]
 
+top:
+
+    python train_pixelsnail.py --hier top --batch 8 [lmdb_dataset]
+    
+bottom:
+    
+    python train_pixelsnail.py --hier bottom --batch 8 [lmdb_dataset]
+    
+sample:
+
+    python sample.py --vqvae checkpoint/vqvae_001.pt --top checkpoint/pixelsnail_top_001.pt --bottom checkpoint/pixelsnail_bottom_001.pt output.png
 Maybe it is better to use larger PixelSNAIL model. Currently model size is reduced due to GPU constraints.
 
 ## Sample
@@ -35,4 +46,4 @@ Maybe it is better to use larger PixelSNAIL model. Currently model size is reduc
 
 Note: This is a training sample
 
-![Sample from Stage 1 (VQ-VAE)](stage1_sample.png)
+![Sample from Stage 1 (VQ-VAE)](output.png)

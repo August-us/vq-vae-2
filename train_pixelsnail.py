@@ -15,7 +15,9 @@ except ImportError:
 from dataset import LMDBDataset
 from pixelsnail import PixelSNAIL
 from scheduler import CycleScheduler
-
+from tensorboardX import SummaryWriter
+writer=SummaryWriter('allTxlog/bottom64',comment='pixelsnail_bottom64')
+writer=SummaryWriter('allTxlog/top32',comment='top32')
 
 def train(args, epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
@@ -48,7 +50,8 @@ def train(args, epoch, loader, model, optimizer, scheduler, device):
         accuracy = correct.sum() / target.numel()
 
         lr = optimizer.param_groups[0]['lr']
-
+        writer.add_scalar('%s_acc'%args.hier,accuracy,epoch)
+        writer.add_scalar('%s_loss'%args.hier,loss.item(),epoch)
         loader.set_description(
             (
                 f'epoch: {epoch + 1}; loss: {loss.item():.5f}; '
@@ -104,7 +107,7 @@ if __name__ == '__main__':
     if args.hier == 'top':
         model = PixelSNAIL(
             [32, 32],
-            512,
+            16,  # represent for the dimension of the enmble space
             args.channel,
             5,
             4,
@@ -117,7 +120,7 @@ if __name__ == '__main__':
     elif args.hier == 'bottom':
         model = PixelSNAIL(
             [64, 64],
-            512,
+            32, # represent for the dimension of the enmble space
             args.channel,
             5,
             4,
@@ -158,5 +161,5 @@ if __name__ == '__main__':
         train(args, i, loader, model, optimizer, scheduler, device)
         torch.save(
             {'model': model.module.state_dict(), 'args': args},
-            f'checkpoint/pixelsnail_{args.hier}_{str(i + 1).zfill(3)}.pt',
+            f'allCheckpoint/pixelsnail32/pixelsnail_{args.hier}_{str(i + 1).zfill(3)}.pt',
         )

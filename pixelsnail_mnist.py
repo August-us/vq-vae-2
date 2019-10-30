@@ -7,6 +7,9 @@ from tqdm import tqdm
 
 from pixelsnail import PixelSNAIL
 
+from tensorboardX import SummaryWriter
+
+writer=SummaryWriter(log_dir='./checkpoint',comment='pixelsnail')
 
 def train(epoch, loader, model, optimizer, device):
     loader = tqdm(loader)
