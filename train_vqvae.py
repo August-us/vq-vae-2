@@ -66,7 +66,7 @@ def train(epoch, loader, model, optimizer, scheduler, device):
                 out, _ = model(sample)
 
             utils.save_image(
-                torch.cat([sample, out], 0),
+                torch.cat([sample, out], 2),
                 f'sample/{str(epoch + 1).zfill(5)}_{str(i).zfill(5)}.png',
                 nrow=sample_size,
                 normalize=True,
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=420)
     parser.add_argument('--lr', type=float, default=3e-4)
     parser.add_argument('--sched', type=str)
-    parser.add_argument('batchsize',type=int,default=8)
+    parser.add_argument('--batchsize',type=int,default=8)
     parser.add_argument('path', type=str)
 
     args = parser.parse_args()
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     transform = transforms.Compose(
         [
             transforms.Resize(args.size),
-            # transforms.CenterCrop(args.size),
+            transforms.CenterCrop(args.size),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
         ]
@@ -114,6 +114,6 @@ if __name__ == '__main__':
     for i in range(args.epoch):
         train(i, loader, model, optimizer, scheduler, device)
         torch.save(
-            model.module.state_dict(), f'checkpoint/vqvae_{str(i + 1).zfill(3)}.pt'
+            model.module.state_dict(), f'checkpoint/vqvae_noraml{str(i + 1).zfill(3)}.pt'
         )
     writer.close()
