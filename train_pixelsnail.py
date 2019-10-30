@@ -107,7 +107,7 @@ if __name__ == '__main__':
     if args.hier == 'top':
         model = PixelSNAIL(
             [32, 32],
-            1,  # represent for the class numbers
+            32,  # represent for the class numbers of the embed space
             args.channel,
             5,
             4,
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     elif args.hier == 'bottom':
         model = PixelSNAIL(
             [64, 64],
-            1, # represent for the class numbers
+            32, # represent for the class numbers of the embed space
             args.channel,
             5,
             4,
