@@ -162,7 +162,7 @@ class VQVAE(nn.Module):
         n_res_block=2,
         n_res_channel=32,
         embed_dim=64,
-        n_embed=32,
+        n_embed=16,
         decay=0.99,
     ):
         super().__init__()
