@@ -16,8 +16,8 @@ from dataset import LMDBDataset
 from pixelsnail import PixelSNAIL
 from scheduler import CycleScheduler
 from tensorboardX import SummaryWriter
-# writer=SummaryWriter('allTxlog/bottom64',comment='pixelsnail_bottom64')
-writer=SummaryWriter('allTxlog/top32',comment='top32')
+writer=SummaryWriter('allTxlog/bottom64',comment='pixelsnail_bottom64')
+# writer=SummaryWriter('allTxlog/top32',comment='top32')
 
 def train(args, epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--dropout', type=float, default=0.1)
     parser.add_argument('--amp', type=str, default='O1')
     parser.add_argument('--sched', type=str)
-    parser.add_argument('--ckpt', type=str,default='allCheckpoint/pixelsnail32/pixelsnail_top_136.pt')
+    parser.add_argument('--ckpt', type=str)
     parser.add_argument('path', type=str)
 
     args = parser.parse_args()
@@ -157,7 +157,7 @@ if __name__ == '__main__':
             optimizer, args.lr, n_iter=len(loader) * args.epoch, momentum=None
         )
 
-    for i in range(137,args.epoch):
+    for i in range(args.epoch):
         train(args, i, loader, model, optimizer, scheduler, device)
         torch.save(
             {'model': model.module.state_dict(), 'args': args},
