@@ -8,6 +8,8 @@ from tqdm import tqdm
 from vqvae import VQVAE
 from pixelsnail import PixelSNAIL
 
+from tensorboardX import SummaryWriter
+writer = SummaryWriter('allTxlog/sample')
 
 @torch.no_grad()
 def sample_model(model, device, batch, size, temperature, condition=None):
@@ -25,7 +27,7 @@ def sample_model(model, device, batch, size, temperature, condition=None):
 
 
 def load_model(model, checkpoint, device):
-    ckpt = torch.load(os.path.join('checkpoint', checkpoint))
+    ckpt = torch.load(os.path.join('allCheckpoint', checkpoint))
 
     
     if 'args' in ckpt:
@@ -37,7 +39,7 @@ def load_model(model, checkpoint, device):
     elif model == 'pixelsnail_top':
         model = PixelSNAIL(
             [32, 32],
-            512,
+            32,
             args.channel,
             5,
             4,
@@ -50,7 +52,7 @@ def load_model(model, checkpoint, device):
     elif model == 'pixelsnail_bottom':
         model = PixelSNAIL(
             [64, 64],
-            512,
+            32,
             args.channel,
             5,
             4,
@@ -97,4 +99,6 @@ if __name__ == '__main__':
     decoded_sample = model_vqvae.decode_code(top_sample, bottom_sample)
     decoded_sample = decoded_sample.clamp(-1, 1)
 
-    save_image(decoded_sample, args.filename, normalize=True, range=(-1, 1))
+    writer.add_image(args.filename,decoded_sample)
+
+    # save_image(decoded_sample, args.filename, normalize=True, range=(-1, 1))
