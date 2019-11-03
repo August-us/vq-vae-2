@@ -74,7 +74,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch', type=int, default=16)
     parser.add_argument('--epoch', type=int, default=420)
-    parser.add_argument('--hier', type=str, default='top')
+    parser.add_argument('--hier', type=str, default='bottom')
     parser.add_argument('--lr', type=float, default=3e-4)
     parser.add_argument('--channel', type=int, default=256)
     parser.add_argument('--n_res_block', type=int, default=4)
