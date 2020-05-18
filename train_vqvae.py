@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     dataset = datasets.ImageFolder(args.path, transform=transform)
     loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=True, num_workers=4)
-    model = nn.DataParallel(VQVAE()).to(device)
+    model = nn.DataParallel(VQVAE(embed_dim=32)).to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = None
@@ -114,6 +114,6 @@ if __name__ == '__main__':
     for i in range(args.epoch):
         train(i, loader, model, optimizer, scheduler, device)
         torch.save(
-            model.module.state_dict(), f'checkpoint/vqvae_noraml{str(i + 1).zfill(3)}.pt'
+            model.module.state_dict(), f'checkpoint/vqvae32_noraml{str(i + 1).zfill(3)}.pt'
         )
     writer.close()

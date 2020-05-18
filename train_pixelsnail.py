@@ -159,6 +159,8 @@ if __name__ == '__main__':
 
     for i in range(args.epoch):
         train(args, i, loader, model, optimizer, scheduler, device)
+        if i%20:
+            continue
         torch.save(
             {'model': model.module.state_dict(), 'args': args},
             f'allCheckpoint/pixelsnail32/pixelsnail_{args.hier}_{str(i + 1).zfill(3)}.pt',

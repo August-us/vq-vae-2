@@ -9,7 +9,7 @@ from vqvae import VQVAE
 from pixelsnail import PixelSNAIL
 
 from tensorboardX import SummaryWriter
-writer = SummaryWriter('allTxlog/sample')
+writer = SummaryWriter('allTxlog/bottom64')
 
 @torch.no_grad()
 def sample_model(model, device, batch, size, temperature, condition=None):
@@ -101,4 +101,4 @@ if __name__ == '__main__':
 
     writer.add_image(args.filename,decoded_sample)
 
-    # save_image(decoded_sample, args.filename, normalize=True, range=(-1, 1))
+    save_image(decoded_sample, args.filename, normalize=True, range=(-1, 2))
