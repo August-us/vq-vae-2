@@ -9,18 +9,19 @@ from torchvision import datasets, transforms, utils
 
 from tqdm import tqdm
 
+from config import LOG_DIR, embedDim
 from vqvae import VQVAE
 from scheduler import CycleScheduler
 
 from tensorboardX import SummaryWriter
-writer = SummaryWriter('./allTxlog/txlog_nembed32')
+
+latent_loss_weight = 0.25
+sample_size = 25
+writer = SummaryWriter(LOG_DIR + 'txlog_nembed%d_lossW%d'%(embedDim,latent_loss_weight))
 def train(epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
 
     criterion = nn.MSELoss()
-
-    latent_loss_weight = 0.25
-    sample_size = 25
 
     mse_sum = 0
     mse_n = 0

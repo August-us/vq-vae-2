@@ -10,7 +10,6 @@ import lmdb
 
 CodeRow = namedtuple('CodeRow', ['top', 'bottom', 'filename'])
 
-
 class ImageFileDataset(datasets.ImageFolder):
     def __getitem__(self, index):
         sample, target = super().__getitem__(index)

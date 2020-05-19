@@ -17,7 +17,6 @@ Currently supports 256px (top/bottom hierarchical prior)
 
 > python train_vqvae.py [DATASET PATH]
 
-If you use FFHQ, I highly recommends to preprocess images. (resize and convert to jpeg)
 
 2. Extract codes for stage 2 training
 

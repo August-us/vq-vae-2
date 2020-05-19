@@ -9,17 +9,19 @@ from torchvision import datasets, transforms, utils
 
 from tqdm import tqdm
 
+from config import LOG_DIR
 from vqvae import VQVAE
 from scheduler import CycleScheduler
 
 from tensorboardX import SummaryWriter
-writer = SummaryWriter('./allTxlog/vqvae')
+writer = SummaryWriter(LOG_DIR + 'vqvae')
 def train(epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
 
     criterion = nn.MSELoss()
 
-    latent_loss_weight = 0.25
+    # hypterparamter
+    latent_loss_weight = 0.25  # 这部分损失过大，容易导致颜色空间退化为常量，建议取值≤0.25
     sample_size = 25
 
     mse_sum = 0
@@ -80,7 +82,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--size', type=int, default=256)
     parser.add_argument('--epoch', type=int, default=420)
-    parser.add_argument('--lr', type=float, default=3e-4)
+    parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--sched', type=str)
     parser.add_argument('--batchsize',type=int,default=8)
     parser.add_argument('path', type=str)
@@ -103,6 +105,7 @@ if __name__ == '__main__':
     dataset = datasets.ImageFolder(args.path, transform=transform)
     loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=True, num_workers=4)
     model = nn.DataParallel(VQVAE(embed_dim=32)).to(device)
+    # model = VQVAE.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = None

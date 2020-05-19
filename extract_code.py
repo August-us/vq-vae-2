@@ -5,7 +5,9 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import lmdb
+
 from tqdm import tqdm
+
 
 from dataset import ImageFileDataset, CodeRow
 from vqvae import VQVAE

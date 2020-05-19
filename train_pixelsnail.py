@@ -6,6 +6,8 @@ from torch import nn, optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from config import embedDim, LOG_DIR
+
 try:
     from apex import amp
 
@@ -16,8 +18,9 @@ from dataset import LMDBDataset
 from pixelsnail import PixelSNAIL
 from scheduler import CycleScheduler
 from tensorboardX import SummaryWriter
-writer=SummaryWriter('allTxlog/bottom64',comment='pixelsnail_bottom64')
+writer=SummaryWriter(LOG_DIR + 'bottom64',comment='pixelsnail_bottom64')
 # writer=SummaryWriter('allTxlog/top32',comment='top32')
+
 
 def train(args, epoch, loader, model, optimizer, scheduler, device):
     loader = tqdm(loader)
@@ -107,7 +110,7 @@ if __name__ == '__main__':
     if args.hier == 'top':
         model = PixelSNAIL(
             [32, 32],
-            32,  # represent for the class numbers of the embed space
+            embedDim,  # represent for the class numbers of the embed space
             args.channel,
             5,
             4,
@@ -120,13 +123,13 @@ if __name__ == '__main__':
     elif args.hier == 'bottom':
         model = PixelSNAIL(
             [64, 64],
-            32, # represent for the class numbers of the embed space
+            embedDim, # represent for the class numbers of the embed space
             args.channel,
             5,
             4,
             args.n_res_block,
             args.n_res_channel,
-            attention=False,
+            attention = False,
             dropout=args.dropout,
             n_cond_res_block=args.n_cond_res_block,
             cond_res_channel=args.n_res_channel,

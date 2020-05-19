@@ -1,15 +1,17 @@
 import argparse
 import os
+import datetime
 
 import torch
 from torchvision.utils import save_image
 from tqdm import tqdm
 
+from config import MODEL_PATH, LOG_DIR
 from vqvae import VQVAE
 from pixelsnail import PixelSNAIL
 
 from tensorboardX import SummaryWriter
-writer = SummaryWriter('allTxlog/bottom64')
+writer = SummaryWriter(LOG_DIR + 'bottom64')
 
 @torch.no_grad()
 def sample_model(model, device, batch, size, temperature, condition=None):
@@ -27,7 +29,7 @@ def sample_model(model, device, batch, size, temperature, condition=None):
 
 
 def load_model(model, checkpoint, device):
-    ckpt = torch.load(os.path.join('allCheckpoint', checkpoint))
+    ckpt = torch.load(os.path.join(MODEL_PATH, checkpoint))
 
     
     if 'args' in ckpt:
